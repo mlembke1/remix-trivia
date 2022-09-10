@@ -1,7 +1,6 @@
-import { createCookie } from "@remix-run/node";
+import { User } from "@prisma/client";
+import { db } from "~/entry.server";
 import { getSession, commitSession } from "../services/cookie.service";
-const { PrismaClient } = require('@prisma/client')
-const db = new PrismaClient()
 
 
 export const postUser = async (hash: string): Promise<any> => {
@@ -13,17 +12,23 @@ export const setUser = async (request: any): Promise<any> => {
     const session = await getSession(request.headers.get("Cookie"));
     const userHash: string = session.get("user-hash");
 
+    // If we haven't seen this user (instance) before, let's store them.
     if (!userHash) {
         const newUserhash = String(Date.now());
         // Create new cookie string
         session.set("user-hash", newUserhash);
         const cookie = await commitSession(session);
 
-        postUser(newUserhash);
+        await postUser(newUserhash);
         return cookie;
     } else {
-        return new Promise((res: any) => false);
+        return false;
     }
 }
+
+export const getUserByHash = async (hash: string): Promise<User> => {
+    return db.user.findUnique({ where: { hash: hash } })
+}
+
 
 

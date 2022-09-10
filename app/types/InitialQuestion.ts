@@ -1,4 +1,5 @@
-export type Question = {
+// What we receive from the public API
+export type InitialQuestion = {
     readonly category: string,
     readonly correct_answer: string,
     readonly difficulty: string,

@@ -19,15 +19,16 @@ model Question {
 
 model User {
   Id           Int            @id @default(autoincrement())
-  hash         String
+  hash         String         @unique
   LoggedAnswer LoggedAnswer[]
 }
 
 model LoggedAnswer {
-  Id         Int      @id @default(autoincrement())
   Question   Question @relation(fields: [QuestionId], references: [Id])
-  QuestionId Int
+  QuestionId Int      
   User       User     @relation(fields: [UserId], references: [Id])
-  UserId     Int
+  UserId     Int      
   Answer     String
+
+  @@id([QuestionId, UserId])
 }
