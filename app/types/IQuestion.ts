@@ -3,4 +3,5 @@ export type IQuestion = {
     Id: number,
     QuestionText: string,
     CorrectAnswer: string,
+    Category: string
 }

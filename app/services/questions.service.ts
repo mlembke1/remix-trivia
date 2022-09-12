@@ -14,8 +14,15 @@ export const getQuestions = async (): Promise<IQuestion[]> => {
     return db.question.findMany();
 }
 
-export const getQuestionById = async(Id: number): Promise<IQuestion> => {
-    return db.question.findUnique({ where: { Id: Id } });
+export const getQuestionById = async(Id: number): Promise<{question: IQuestion, index: number}> => {
+    const allQuestions = await getQuestions();
+    const question = await db.question.findUnique({ where: { Id: Id } });
+    // Here we can determine which question we're on. Calling this index.
+    let index: number = 0;
+    allQuestions.map((x: IQuestion, i: number) => {
+     if (x.Id == question.Id) index = (i + 1);   
+    })
+    return {question, index};
 }
 
 export const postQuestions = async (r: { results: InitialQuestion[]}): Promise<any> => {
@@ -23,7 +30,8 @@ export const postQuestions = async (r: { results: InitialQuestion[]}): Promise<a
         r.results.map((question: InitialQuestion) => {
             const mappedQ = {
                 QuestionText: question.question,
-                CorrectAnswer: question.correct_answer
+                CorrectAnswer: question.correct_answer,
+                Category: question.category
             }
             return db.question.create({ data: mappedQ });
         })
@@ -38,4 +46,9 @@ export const setQuestions = async (): Promise<any> => {
     } else {
         return questions;
     }
+}
+
+
+export const clearQuestions = async (): Promise<any> => {
+    return db.question.deleteMany({});
 }

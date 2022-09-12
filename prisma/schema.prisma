@@ -14,6 +14,7 @@ model Question {
   Id            Int            @id @default(autoincrement())
   QuestionText  String
   CorrectAnswer String
+  Category      String
   LoggedAnswer  LoggedAnswer[]
 }
 

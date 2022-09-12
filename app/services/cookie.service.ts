@@ -6,3 +6,8 @@ export const { getSession, commitSession, destroySession } =
       name: "user-hash",
     },
   });
+
+  export const getUserHash = async (requestObject: any): Promise<String> => {
+    const session = await getSession(requestObject.request.headers.get("Cookie"));
+    return session.get("user-hash");
+  }

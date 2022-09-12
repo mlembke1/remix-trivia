@@ -1,5 +1,6 @@
 import type { LoggedAnswer, User } from "@prisma/client";
 import { db } from "~/entry.server";
+import { getSession } from "./cookie.service";
 import { getUserByHash } from "./user.service";
 
 export const postAnswer = async (answerObject: { QuestionId: number, UserHash: string, Answer: string }): Promise<any> => {
@@ -13,7 +14,9 @@ export const postAnswer = async (answerObject: { QuestionId: number, UserHash: s
     })
 }
 
-export const getAnswerByUserAndQuestion = async (userHash: string, questionId: number): Promise<any> => {
+export const getAnswerByUserAndQuestion = async (requestObject: {request: any, params: any}, questionId: number): Promise<any> => {
+    const session = await getSession(requestObject.request.headers.get("Cookie"));
+    const userHash: string = session.get("user-hash");
     const userId: number = (await getUserByHash(userHash) as User).Id
     return db.loggedAnswer.findUnique({
         where: {
@@ -38,4 +41,8 @@ export const getAnswersByUserId = async (userId: number): Promise<LoggedAnswer[]
         where: { UserId: userId },
         include: { Question: true }
     })
+}
+
+export const clearAnswers = async (): Promise<any> => {
+    return db.loggedAnswer.deleteMany({});
 }
