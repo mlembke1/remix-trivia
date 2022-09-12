@@ -17,6 +17,7 @@ export const loader: LoaderFunction = async (o) => {
         const userHash = await getUserHash(o);
         const alreadyAnswered = await getAnswerByUserAndQuestion(o, q.question.Id);
         
+        // When we get to a question, have they already answered it?
         return !alreadyAnswered ? {
             question: q.question,
             userHash: userHash,
@@ -27,8 +28,8 @@ export const loader: LoaderFunction = async (o) => {
 
 export let action: ActionFunction = async (o) => {
     const form = await o.request.formData();
+    // If they haven't answered this question, ensure they can't move forward.
     if (!(form.get('answer'))) {
-        // If they haven't answered this question, ensure they can't move forward.
         const alreadyAnswered = await getAnswerByUserAndQuestion(o, Number(o.params.questionId));
         if (!alreadyAnswered) {
             return null
@@ -46,7 +47,6 @@ export let action: ActionFunction = async (o) => {
         UserHash: userHash,
         Answer: answer
     }
-
 
     await postAnswer(answerObject);
     
@@ -74,6 +74,7 @@ function Question() {
         }
     }, [isSumbitting]);
 
+    // Because the public data has esaped characters we're using innerHTML and have to clean it first
     const sanitize = (d: any):string => sanitizeHtml(d) || '';
 
     return data ? (

@@ -1,9 +1,8 @@
-import { ActionFunction, json, redirect } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
+import type { LoaderFunction , ActionFunction} from "@remix-run/node";
+import { Form } from "@remix-run/react";
 import { setQuestions } from "~/services/questions.service";
 import { setUser } from "~/services/user.service";
-import type { IQuestion } from "~/types/IQuestion";
 import { clearAnswers } from "~/services/answers.service";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -31,7 +30,7 @@ export let action: ActionFunction = async ({ request }) => {
 export default function Index() {
 
   return (
-    <Form method="post" className="flex flex-col gap-20 mt-10">
+    <Form method="post" className="flex flex-col gap-20 mt-32">
       <div className="container mx-auto text-center my-5">
         <h1>Welcome to the Trivia Challenge!</h1>
       </div>
