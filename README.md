@@ -4,7 +4,7 @@
 
 ## Testing
 
-- To run this locally, you should have node installed. It is also running SQL with Prisma.
+- To run this locally, you should have node installed. It is also running SQLlite with Prisma.
 
 From your terminal:
 
